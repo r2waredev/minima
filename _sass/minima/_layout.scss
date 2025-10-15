@@ -110,6 +110,7 @@
 
     .nav-item {
       display: block;
+      margin-right: $spacing-unit * 0.5;
       padding: 5px 0;
       color: $text-color;
       line-height: $base-line-height;
