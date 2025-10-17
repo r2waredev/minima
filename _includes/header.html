@@ -13,7 +13,8 @@
           <span class="menu-icon"></span>
         </label>
 
-        {% include nav-items.html paths = page_paths %}
+        {% assign paths = page_paths %}
+        {% include nav-items.html %}
       </nav>
     {%- endunless %}
   </div>

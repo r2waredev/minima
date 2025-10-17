@@ -2,9 +2,9 @@
 ---
 
 @import
-  "bootswatch/{{ site.theme | default: 'litera' }}/variables",
+  "bootswatch/litera/_variables",
   "bootstrap/bootstrap",
-  "bootswatch/{{ site.theme | default: 'litera' }}/bootswatch";
+  "bootswatch/litera/_bootswatch";
 
 html {
   scroll-behavior: smooth;
