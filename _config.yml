@@ -20,3 +20,20 @@ plugins:
  - jekyll-feed
  - jekyll-seo-tag
  - jekyll-sitemap
+
+# Minima: custom header links
+header_pages:
+  - _pages/frontpage.md
+  - _pages/about.md
+  - _pages/archive.md
+
+include:
+  - _pages
+
+exclude:
+  - .gitignore
+  - docker-compose.yml
+  - Gemfile
+  - Gemfile.lock
+  - LICENSE.txt
+  - README.md
