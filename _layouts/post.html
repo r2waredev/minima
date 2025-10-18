@@ -1,11 +1,11 @@
 ---
 layout: base
 ---
-<article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
-
-  <header class="post-header">
-    <h1 class="post-title p-name" itemprop="name headline">{{ page.title | escape }}</h1>
-    <div class="post-meta">
+<article class="row h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <div class="col">
+    <header class="mb-4">
+      <h1 class="display-5 p-name" itemprop="name headline">{{ page.title | escape }}</h1>
+      <div class="text-muted mb-3">
       {%- assign date_format = site.minima.date_format | default: "%b %-d, %Y" -%}
       {% assign pdate = page.date | date_to_xmlschema %}
       {%- if page.modified_date %}<span class="meta-label">Published:</span>{% endif %}
@@ -20,31 +20,32 @@ layout: base
           {{ mdate | date: date_format }}
         </time>
       {%- endif -%}
-      {%- if page.author %}
-      <div class="{% unless page.modified_date %}force-inline {% endunless %}post-authors">
-        {%- for author in page.author %}
-          <span itemprop="author" itemscope itemtype="http://schema.org/Person">
-            <span class="p-author h-card" itemprop="name">{{ author }}</span></span>
-          {%- if forloop.last == false %}, {% endif -%}
-        {% endfor %}
+        {%- if page.author %}
+        <div class="{% unless page.modified_date %}d-inline {% endunless %}authors">
+          {%- for author in page.author %}
+            <span itemprop="author" itemscope itemtype="http://schema.org/Person">
+              <span class="p-author h-card" itemprop="name">{{ author }}</span></span>
+            {%- if forloop.last == false %}, {% endif -%}
+          {% endfor %}
+        </div>
+        {%- endif %}
       </div>
-      {%- endif %}
-    </div>
-  </header>
+    </header>
 
-  <div class="post-content e-content" itemprop="articleBody">
-    {{ content }}
-  </div>
-
-  {% if jekyll.environment == 'production' -%}
-    {% if page.comments == false -%}
-    <div class="comments-disabled-message">
-      Comments have been disabled for this post.
+    <div class="content e-content" itemprop="articleBody">
+      {{ content }}
     </div>
-    {% else -%}
-      {%- include comments.html -%}
+
+    {% if jekyll.environment == 'production' -%}
+      {% if page.comments == false -%}
+        <div class="alert alert-info mt-4">
+          Comments have been disabled for this post.
+        </div>
+      {% else -%}
+        {%- include comments.html -%}
+      {% endif -%}
     {% endif -%}
-  {% endif -%}
 
-  <a class="u-url" href="{{ page.url | relative_url }}" hidden></a>
+    <a class="u-url" href="{{ page.url | relative_url }}" hidden></a>
+  </div>
 </article>
