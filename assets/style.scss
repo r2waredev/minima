@@ -1,11 +1,27 @@
 ---
 ---
 
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
+
 @import
   "bootswatch/litera/_variables",
   "bootstrap/bootstrap",
   "bootswatch/litera/_bootswatch";
 
+// Custom font variables
+$font-family-heading: 'Bebas Neue', $font-family-sans-serif;
+$font-family-mono: ui-monospace, 'SF Mono', 'Monaco', 'Cascadia Code', 'Roboto Mono', 'Oxygen Mono', 'Ubuntu Monospace', 'Source Code Pro', 'Fira Mono', 'Droid Sans Mono', 'Courier New', monospace;
+
 html {
   scroll-behavior: smooth;
+}
+
+// Custom heading font styling
+h1, h2, h3, h4, h5, h6, .hfont, .font-heading {
+  font-family: $font-family-heading;
+}
+
+// Custom monospace font styling
+pre, code, .font-mono {
+  font-family: $font-family-mono;
 }
