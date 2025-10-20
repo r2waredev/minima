@@ -24,7 +24,7 @@ plugins:
 # Minima: custom header links
 minima:
   nav_pages:
-    - _pages/frontpage.md
+    - _pages/frontpage.html
     - _pages/about.md
     - _pages/archive.md
 
