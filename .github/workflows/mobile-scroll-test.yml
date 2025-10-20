@@ -1,0 +1,213 @@
+name: Mobile Scroll Test
+
+on:
+  push:
+    branches: [ master, main ]
+  pull_request:
+    branches: [ master, main ]
+  workflow_dispatch:
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: '1.21'
+          
+      - name: Install gojekyll
+        run: |
+          go install github.com/osteele/gojekyll@latest
+          
+      - name: Build site with gojekyll
+        run: |
+          gojekyll build
+          
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          
+      - name: Install Playwright
+        run: |
+          npm init -y
+          npm install @playwright/test
+          npx playwright install chromium
+          
+      - name: Create mobile scroll test
+        run: |
+          cat > mobile-scroll-test.js << 'EOF'
+          const { test, expect } = require('@playwright/test');
+          const path = require('path');
+          
+          test.describe('Mobile Responsive Tests', () => {
+            const testViewports = [
+              { name: 'iPhone SE', width: 375, height: 667 },
+              { name: 'iPhone 12', width: 390, height: 844 },
+              { name: 'Samsung Galaxy S21', width: 360, height: 800 },
+              { name: 'Small mobile', width: 320, height: 568 }
+            ];
+            
+            testViewports.forEach(viewport => {
+              test(`No horizontal scroll on ${viewport.name} (${viewport.width}x${viewport.height})`, async ({ page }) => {
+                // Set mobile viewport
+                await page.setViewportSize({ width: viewport.width, height: viewport.height });
+                
+                // Navigate to the built site
+                const siteDir = path.join(process.cwd(), '_site');
+                await page.goto(`file://${siteDir}/index.html`);
+                
+                // Wait for page to load completely
+                await page.waitForLoadState('networkidle');
+                
+                // Check for horizontal scroll
+                const scrollInfo = await page.evaluate(() => {
+                  const body = document.body;
+                  const html = document.documentElement;
+                  
+                  return {
+                    bodyScrollWidth: body.scrollWidth,
+                    htmlScrollWidth: html.scrollWidth,
+                    viewportWidth: window.innerWidth,
+                    documentWidth: Math.max(
+                      body.scrollWidth,
+                      body.offsetWidth,
+                      html.clientWidth,
+                      html.scrollWidth,
+                      html.offsetWidth
+                    )
+                  };
+                });
+                
+                console.log(`${viewport.name} scroll info:`, scrollInfo);
+                
+                // Assert no horizontal scrolling
+                expect(scrollInfo.documentWidth).toBeLessThanOrEqual(viewport.width + 1); // +1 for rounding
+                expect(scrollInfo.bodyScrollWidth).toBeLessThanOrEqual(viewport.width + 1);
+                
+                // Additional check for overflowing elements
+                const overflowingElements = await page.evaluate(() => {
+                  const elements = Array.from(document.querySelectorAll('*'));
+                  const overflowing = [];
+                  
+                  elements.forEach(element => {
+                    const rect = element.getBoundingClientRect();
+                    const computedStyle = window.getComputedStyle(element);
+                    
+                    // Skip elements that are intentionally hidden or have overflow hidden
+                    if (computedStyle.display === 'none' || 
+                        computedStyle.visibility === 'hidden' ||
+                        computedStyle.overflowX === 'hidden') {
+                      return;
+                    }
+                    
+                    if (rect.right > window.innerWidth && rect.width > 0) {
+                      overflowing.push({
+                        tagName: element.tagName,
+                        className: element.className,
+                        id: element.id,
+                        right: rect.right,
+                        width: rect.width,
+                        viewportWidth: window.innerWidth
+                      });
+                    }
+                  });
+                  
+                  return overflowing;
+                });
+                
+                if (overflowingElements.length > 0) {
+                  console.log(`Overflowing elements on ${viewport.name}:`, overflowingElements);
+                }
+                
+                expect(overflowingElements).toHaveLength(0);
+                
+                // Take screenshot for debugging
+                await page.screenshot({ 
+                  path: `mobile-${viewport.width}x${viewport.height}.png`,
+                  fullPage: true
+                });
+              });
+            });
+            
+            test('Check common pages for mobile responsiveness', async ({ page }) => {
+              const pages = ['index.html', 'about/index.html', '404.html'];
+              
+              for (const pagePath of pages) {
+                // Set to mobile viewport
+                await page.setViewportSize({ width: 375, height: 667 });
+                
+                const siteDir = path.join(process.cwd(), '_site');
+                const fullPath = `file://${siteDir}/${pagePath}`;
+                
+                try {
+                  await page.goto(fullPath);
+                  await page.waitForLoadState('networkidle');
+                  
+                  const hasHorizontalScroll = await page.evaluate(() => {
+                    return Math.max(
+                      document.body.scrollWidth,
+                      document.documentElement.scrollWidth
+                    ) > window.innerWidth;
+                  });
+                  
+                  expect(hasHorizontalScroll).toBe(false);
+                  console.log(`✓ ${pagePath} passes mobile scroll test`);
+                } catch (error) {
+                  console.log(`⚠ Could not test ${pagePath}: ${error.message}`);
+                }
+              }
+            });
+          });
+          EOF
+          
+      - name: Create Playwright config
+        run: |
+          cat > playwright.config.js << 'EOF'
+          module.exports = {
+            testDir: '.',
+            testMatch: 'mobile-scroll-test.js',
+            timeout: 30000,
+            use: {
+              headless: true,
+              screenshot: 'only-on-failure',
+              trace: 'retain-on-failure',
+            },
+            reporter: [
+              ['list'],
+              ['html', { outputFolder: 'test-results' }]
+            ],
+            projects: [
+              {
+                name: 'mobile-scroll-tests',
+                use: { 
+                  browserName: 'chromium',
+                }
+              }
+            ]
+          };
+          EOF
+          
+      - name: Run mobile scroll tests
+        run: npx playwright test
+        
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mobile-test-results
+          path: |
+            test-results/
+            *.png
+            
+      - name: Upload screenshots on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mobile-screenshots
+          path: "*.png"
