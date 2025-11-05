@@ -13,6 +13,9 @@ description: >
 skin: litera  # See themes at https://bootswatch.com/
 date_format: "%b %d, %Y"
 
+pin_protect: true
+disable_mobile: true
+
 # Build settings
 # --------------
 
