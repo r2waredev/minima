@@ -1,0 +1,232 @@
+---
+layout: page
+title: Brand Guidelines
+permalink: /brand/
+colors:
+  - name: Primary Blue
+    hex: "#2c5aa0"
+  - name: Accent Orange
+    hex: "#f39c12"
+  - name: Charcoal
+    hex: "#1a1a1a"
+  - name: Light Gray
+    hex: "#ecf0f1"
+  - name: Success Green
+    hex: "#27ae60"
+fonts:
+  - role: Headlines
+    name: Montserrat
+    weight: 700
+    css_var: --font-headings
+    fallback: "system-ui, -apple-system, sans-serif"
+    example_text: The Future is Now
+  - role: Subheadings
+    name: Montserrat
+    weight: 500
+    css_var: --font-headings
+    fallback: "system-ui, -apple-system, sans-serif"
+    example_text: Innovation Meets Simplicity
+  - role: Body Text
+    name: Merriweather
+    weight: 400
+    css_var: --font-body
+    fallback: "Georgia, serif"
+    example_text: We believe in creating products that are not only powerful but also intuitive and accessible to everyone. Our mission is to bridge the gap between technology and human experience.
+  - role: Sans-serif
+    name: Inter
+    weight: 400
+    css_var: --font-sans-serif
+    fallback: "system-ui, -apple-system, sans-serif"
+    example_text: Clean, modern sans-serif for UI elements, buttons, and navigation.
+  - role: Monospace
+    name: Source Code Pro
+    weight: 400
+    css_var: --font-monospace
+    fallback: "SFMono-Regular, Menlo, Monaco, Consolas, monospace"
+    example_text: 'const example = "Code snippets and technical content";'
+google_fonts_url: "https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700&family=Merriweather:wght@400&family=Inter:wght@400;600&family=Source+Code+Pro:wght@400;600&display=swap"
+mood_board_images:
+  - "https://picsum.photos/id/1/400/400"
+  - "https://picsum.photos/id/10/400/400"
+  - "https://picsum.photos/id/20/400/400"
+  - "https://picsum.photos/id/180/400/400"
+  - "https://picsum.photos/id/200/400/400"
+  - "https://picsum.photos/id/201/400/400"
+  - "https://picsum.photos/id/250/400/400"
+  - "https://picsum.photos/id/251/400/400"
+personality:
+  - Innovative
+  - Trustworthy
+  - Bold
+  - Approachable
+  - Forward-Thinking
+---
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="{{ page.google_fonts_url }}" rel="stylesheet">
+
+<style>
+:root {
+{% for font in page.fonts %}
+  {% if font.css_var %}
+  {{ font.css_var }}: '{{ font.name }}', {{ font.fallback }};
+  {% endif %}
+{% endfor %}
+}
+.brand-section {
+  margin: 3rem 0;
+}
+
+.brand-section h2 {
+  border-bottom: 2px solid #333;
+  padding-bottom: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.color-palette {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1rem;
+}
+
+.color-swatch {
+  text-align: center;
+}
+
+.color-box {
+  height: 120px;
+  border-radius: 8px;
+  margin-bottom: 0.5rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.color-name {
+  font-weight: bold;
+  margin: 0.5rem 0 0.25rem;
+}
+
+.color-hex {
+  font-family: monospace;
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.font-showcase {
+  padding: 1.5rem;
+  background: #f8f8f8;
+  border-radius: 8px;
+  margin: 1rem 0;
+}
+
+.font-example {
+  margin: 1.5rem 0;
+}
+
+.font-name {
+  font-size: 0.9rem;
+  color: #666;
+  margin-bottom: 0.5rem;
+}
+
+.mood-board {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.mood-item {
+  aspect-ratio: 1;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.mood-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.personality-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.personality-tag {
+  padding: 0.75rem 1.5rem;
+  background: #2c5aa0;
+  color: white;
+  border-radius: 25px;
+  font-weight: 500;
+  font-size: 1.1rem;
+}
+</style>
+
+<div class="brand-section">
+  <h2>About Example Co.</h2>
+  <p>Example Co. is a forward-thinking technology company dedicated to creating innovative solutions that empower businesses and individuals. Our brand reflects our commitment to clarity, innovation, and trust.</p>
+</div>
+
+<div class="brand-section">
+  <h2>Color Palette</h2>
+  <div class="color-palette">
+    {% for color in page.colors %}
+    <div class="color-swatch">
+      <div class="color-box" style="background-color: {{ color.hex }};"></div>
+      <div class="color-name">{{ color.name }}</div>
+      <div class="color-hex">{{ color.hex }}</div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+<div class="brand-section">
+  <h2>Typography</h2>
+  <div class="font-showcase">
+    <div class="font-example">
+      <div class="font-name">{{ page.fonts[0].role }}: {{ page.fonts[0].name }} {{ page.fonts[0].weight }}</div>
+      <h1 style="font-family: var({{ page.fonts[0].css_var }}); font-weight: {{ page.fonts[0].weight }}; margin: 0;">{{ page.fonts[0].example_text }}</h1>
+    </div>
+    <div class="font-example">
+      <div class="font-name">{{ page.fonts[1].role }}: {{ page.fonts[1].name }} {{ page.fonts[1].weight }}</div>
+      <h3 style="font-family: var({{ page.fonts[1].css_var }}); font-weight: {{ page.fonts[1].weight }}; margin: 0;">{{ page.fonts[1].example_text }}</h3>
+    </div>
+    <div class="font-example">
+      <div class="font-name">{{ page.fonts[2].role }}: {{ page.fonts[2].name }} {{ page.fonts[2].weight }}</div>
+      <p style="font-family: var({{ page.fonts[2].css_var }}); font-weight: {{ page.fonts[2].weight }}; margin: 0;">{{ page.fonts[2].example_text }}</p>
+    </div>
+    <div class="font-example">
+      <div class="font-name">{{ page.fonts[3].role }}: {{ page.fonts[3].name }} {{ page.fonts[3].weight }}</div>
+      <p style="font-family: var({{ page.fonts[3].css_var }}); font-weight: {{ page.fonts[3].weight }}; margin: 0;">{{ page.fonts[3].example_text }}</p>
+    </div>
+    <div class="font-example">
+      <div class="font-name">{{ page.fonts[4].role }}: {{ page.fonts[4].name }} {{ page.fonts[4].weight }}</div>
+      <code style="font-family: var({{ page.fonts[4].css_var }}); font-weight: {{ page.fonts[4].weight }}; font-size: 1rem; display: block; margin: 0;">{{ page.fonts[4].example_text }}</code>
+    </div>
+  </div>
+</div>
+
+<div class="brand-section">
+  <h2>Mood Board</h2>
+  <div class="mood-board">
+    {% for image in page.mood_board_images %}
+    <div class="mood-item">
+      <img src="{{ image }}" alt="Photo {{ forloop.index }}">
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+<div class="brand-section">
+  <h2>Brand Personality</h2>
+  <div class="personality-tags">
+    {% for word in page.personality %}
+    <span class="personality-tag">{{ word }}</span>
+    {% endfor %}
+  </div>
+</div>
