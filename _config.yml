@@ -13,8 +13,27 @@ description: >
 skin: litera  # See themes at https://bootswatch.com/
 date_format: "%b %d, %Y"
 
+# This email will be sent alerts when forms are submitted via r2ware.
+email: admin-email@domain.com
+
+# r2ware integration branding
+icon: https://domain.com/icon.svg
+logo: https://domain.com/logo.png
+artwork: https://domain.com/opengraph-art.jpg
+primary_color: "#67c3f3"
+
+# If true, require a PIN to view the site.  Otherwise display the site normally.  This is useful
+# for making a site available for reveiw before it's ready to publish.  It does not make the site
+# secure or prevent robots from indexing.  It is just meant to communicate the site is not live
+# for anyone that stumbles on it or reviews.
 pin_protect: true
+
+# If true, this disables website display on mobile size screens.  Otherwise, the site is displayed
+# normally.  This is useful for website previews when the mobile version has not been optimized
+# yet but you would like design feedback on the desktop version.
 disable_mobile: true
+
+# If true, this will allow SEO robots to index the site.  If false, they will not.
 robots_allow: true
 
 # Build settings
