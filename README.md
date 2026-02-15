@@ -17,6 +17,7 @@ go install github.com/reidransom/gojekyll@latest
 ## Quick Start
 
 ```sh
+# Start dev server
 just serve
 ```
 
