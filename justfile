@@ -11,7 +11,7 @@ default:
 
 # Start development server with live reload
 serve:
-    gojekyll serve
+    gojekyll serve --host 0.0.0.0
 
 # Start dev server on custom port
 serve-port port="4000":
@@ -166,3 +166,49 @@ ci: install-ci install-playwright build test
 # Pre-commit checks
 pre-commit: build test
     @echo "Pre-commit checks passed ✓"
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Image Utilities
+# ─────────────────────────────────────────────────────────────────────────────
+
+# Optimize a PNG file (requires pngquant, oxipng)
+pngopt file:
+    pngquant --quality=65-80 --speed 1 --output tmp.png "{{ file }}"
+    oxipng -o 6 --strip safe --alpha tmp.png
+    mv tmp.png "{{ file }}"
+
+# Resize image to ~1200x1200 (requires imagemagick)
+imglg file:
+    magick "{{ file }}" -resize 1440000@ "{{ file }}"
+
+# Resize image to ~800x800 (requires imagemagick)
+imgmd file:
+    magick "{{ file }}" -resize 640000@ "{{ file }}"
+
+# Resize image to ~300x300 (requires imagemagick)
+imgsm file:
+    magick "{{ file }}" -resize 90000@ "{{ file }}"
+
+# Trim whitespace from image (requires imagemagick)
+crop file:
+    magick "{{ file }}" -trim +repage "{{ file }}"
+
+# Create .ico file from 512x512 PNG (requires imagemagick)
+mkico file:
+    magick "{{ file }}" -define icon:auto-resize=16,24,32,48,64,128 "{{ file }}.ico"
+
+# Create complete favicon set from source image (SVG or 512x512 PNG)
+mkfavicon source output="favicon":
+    #!/usr/bin/env bash
+    set -euo pipefail
+    if [ -d "{{ output }}" ]; then
+        echo "Error: Directory already exists: {{ output }}" >&2
+        exit 1
+    fi
+    mkdir -p "{{ output }}"
+    magick -density 600 "{{ source }}" -background white -flatten -resize 512x512 "{{ output }}/web-app-manifest-512x512.png"
+    magick -density 600 "{{ source }}" -background white -flatten -resize 192x192 "{{ output }}/web-app-manifest-192x192.png"
+    magick -density 600 "{{ source }}" -background white -flatten -resize 180x180 "{{ output }}/apple-touch-icon.png"
+    magick -density 600 "{{ source }}" -background white -flatten -resize 96x96 "{{ output }}/favicon-96x96.png"
+    magick -density 600 "{{ source }}" -define icon:auto-resize=16,24,32,48,64,128 "{{ output }}/favicon.ico"
+    echo "Created favicon set in '{{ output }}/'"

@@ -46,6 +46,23 @@ assets/        # Static assets (CSS, JS, images)
 _site/         # Generated site (git-ignored)
 ```
 
+## Image Utilities
+
+Optional tools for image optimization and favicon generation:
+
+```sh
+brew install imagemagick pngquant oxipng
+```
+
+Usage:
+
+```sh
+just pngopt image.png       # Optimize PNG
+just imglg image.jpg        # Resize to ~1200px
+just crop image.png         # Trim whitespace
+just mkfavicon logo.svg     # Generate favicon set
+```
+
 ## Testing
 
 Playwright tests verify mobile responsiveness:
