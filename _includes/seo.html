@@ -1,0 +1,78 @@
+<!-- Begin SEO tag -->
+{%- assign page_title = page.title | default: site.title -%}
+{%- if page.title and site.title and page.title != site.title -%}
+  {%- assign seo_title = page.title | append: " | " | append: site.title -%}
+{%- elsif site.title and site.tagline and page_title == site.title -%}
+  {%- assign seo_title = site.title | append: " | " | append: site.tagline -%}
+{%- else -%}
+  {%- assign seo_title = page_title -%}
+{%- endif -%}
+{%- if seo_title -%}
+<title>{{ seo_title | escape }}</title>
+{%- endif -%}
+
+{%- comment -%} ===== Description ===== {%- endcomment -%}
+{%- assign page_description = page.description | default: page.excerpt | strip_html | normalize_whitespace | default: site.description -%}
+{%- if page_description -%}
+<meta name="description" content="{{ page_description | escape | truncatewords: 100 }}">
+{%- endif -%}
+
+{%- comment -%} ===== Canonical URL ===== {%- endcomment -%}
+{%- if page.canonical_url -%}
+  {%- assign canonical = page.canonical_url -%}
+{%- else -%}
+  {%- assign canonical = page.url | absolute_url -%}
+{%- endif -%}
+<link rel="canonical" href="{{ canonical }}">
+
+{%- comment -%} ===== Open Graph ===== {%- endcomment -%}
+{%- if page.collection == "posts" and page.date -%}
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="{{ page.date | date_to_xmlschema }}">
+{%- else -%}
+<meta property="og:type" content="website">
+{%- endif -%}
+{%- if page_title -%}
+<meta property="og:title" content="{{ page_title | escape }}">
+{%- endif -%}
+{%- if page_description -%}
+<meta property="og:description" content="{{ page_description | escape | truncatewords: 100 }}">
+{%- endif -%}
+<meta property="og:url" content="{{ canonical }}">
+{%- if site.title -%}
+<meta property="og:site_name" content="{{ site.title | escape }}">
+{%- endif -%}
+<meta property="og:locale" content="{{ page.lang | default: site.lang | default: "en_US" | replace: "-", "_" }}">
+{%- assign og_image = page.image | default: site.image -%}
+{%- if og_image -%}
+<meta property="og:image" content="{{ og_image | absolute_url }}">
+{%- endif -%}
+
+{%- comment -%} ===== JSON-LD Structured Data ===== {%- endcomment -%}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "{% if page.collection == 'posts' and page.date %}BlogPosting{% elsif page.url == '/' or page.url == '/index.html' %}WebSite{% else %}WebPage{% endif %}",
+  "headline": {{ page_title | escape | jsonify }},
+  {%- if page_description %}
+  "description": {{ page_description | escape | truncatewords: 100 | jsonify }},
+  {%- endif %}
+  "url": {{ canonical | jsonify }},
+  {%- if page.collection == "posts" and page.date %}
+  "datePublished": "{{ page.date | date_to_xmlschema }}",
+  {%- endif %}
+  {%- if page.last_modified_at %}
+  "dateModified": "{{ page.last_modified_at | date_to_xmlschema }}",
+  {%- elsif page.collection == "posts" and page.date %}
+  "dateModified": "{{ page.date | date_to_xmlschema }}",
+  {%- endif %}
+  {%- if og_image %}
+  "image": {{ og_image | absolute_url | jsonify }},
+  {%- endif %}
+  "publisher": {
+    "@type": "Organization",
+    "name": {{ site.title | escape | jsonify }}
+  }
+}
+</script>
+<!-- End SEO tag -->
