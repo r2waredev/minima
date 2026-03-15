@@ -20,6 +20,9 @@ email: admin-email@domain.com
 icon: https://domain.com/icon.svg
 logo: https://domain.com/logo.png
 artwork: https://domain.com/opengraph-art.jpg
+
+# Default social share image (1200x630)
+image: /assets/imgs/og-image.jpg
 primary_color: "#67c3f3"
 
 # If true, require a PIN to view the site.  Otherwise display the site normally.  This is useful
